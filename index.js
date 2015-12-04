@@ -1,4 +1,9 @@
-var paramRegex = /:[a-z]+/g;
+var paramRegex = /:[a-zA-Z]+/g;
+
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
+function escapeRegexCharacters(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 module.exports = function extractParams(str, pattern) {
   var paramsMatch = pattern.match(paramRegex);
@@ -11,7 +16,10 @@ module.exports = function extractParams(str, pattern) {
     return param.slice(1); // remove leading ':'
   });
 
-  var valuesRegex = new RegExp('^' + pattern.replace(paramRegex, '(.+)'));
+  var valuesRegex = new RegExp('^' + pattern.split(paramRegex).map(function(patternPart) {
+    return escapeRegexCharacters(patternPart);
+  }).join('(.+)'));
+
   var valuesMatch = str.match(valuesRegex);
 
   if (valuesMatch === null) {
