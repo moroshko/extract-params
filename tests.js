@@ -3,21 +3,21 @@ var extractParams = require('./index');
 
 var testCases = [
   {
-    should: 'not find any parameters if there is no match',
+    should: 'return null if there is no match',
     str: 'everyone-knows-that-elm-is-awesome',
     pattern: 'he-said-that-:language-is-:description',
-    result: {}
+    result: null
   },
   {
-    should: 'not find any parameters if matches but not at the start',
+    should: 'return null if there is match but not at the start',
     str: 'she-said-that-elm-is-awesome',
     pattern: 'he-said-that-:language-is-:description',
-    result: {}
+    result: null
   },
   {
-    should: 'not find any parameters if pattern has no parameters',
+    should: 'return {} if there is match but the pattern has no parameters',
     str: 'react-is-awesome',
-    pattern: 'awesome',
+    pattern: 'react-is-awesome',
     result: {}
   },
   {

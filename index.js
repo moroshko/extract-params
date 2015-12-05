@@ -6,6 +6,16 @@ function escapeRegexCharacters(str) {
 }
 
 module.exports = function extractParams(str, pattern) {
+  var valuesRegex = new RegExp('^' + pattern.split(paramRegex).map(function(patternPart) {
+    return escapeRegexCharacters(patternPart);
+  }).join('(.+)'));
+
+  var valuesMatch = str.match(valuesRegex);
+
+  if (valuesMatch === null) {
+    return null;
+  }
+
   var paramsMatch = pattern.match(paramRegex);
 
   if (paramsMatch === null) {
@@ -15,16 +25,6 @@ module.exports = function extractParams(str, pattern) {
   var params = paramsMatch.map(function(param) {
     return param.slice(1); // remove leading ':'
   });
-
-  var valuesRegex = new RegExp('^' + pattern.split(paramRegex).map(function(patternPart) {
-    return escapeRegexCharacters(patternPart);
-  }).join('(.+)'));
-
-  var valuesMatch = str.match(valuesRegex);
-
-  if (valuesMatch === null) {
-    return {};
-  }
 
   return valuesMatch.slice(1).reduce(function(result, value, index) {
     result[params[index]] = value;

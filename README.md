@@ -29,13 +29,15 @@ var extractParams = require('extract-params');
 
 ### extractParams(str, pattern)
 
-This function extracts `pattern` parameters by matching `str` **at the start** (see examples below).
+Tests whether `str` matches the given parameterized `pattern`, and returns a key-value object of parameters and their values in case of a successful match.
 
 `pattern` parameters must be in the following format: `:camelCase`
 
-If `str` doesn't match `pattern` at the start, returns `{}`.
+Match must occur from the first character of `str` in order to be considered successful (see examples below).
 
-Example 1:
+If match is not successful, `extractParams` returns `null`.
+
+#### Example 1
 
 ```js
 var params = extractParams(
@@ -52,7 +54,7 @@ var params = extractParams(
 */
 ```
 
-Example 2:
+#### Example 2
 
 ```js
 var params = extractParams(
@@ -62,9 +64,10 @@ var params = extractParams(
 
 /* 
   Returns:
-    {}
+    null
       
-  because `str` matches `pattern`, but not at the start.
+  because `str` matches `pattern`,
+  but not from the first character of `str`.
 */
 ```
 
