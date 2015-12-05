@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var extractParams = require('./index');
+var extractParams = require('../lib/extractParams');
 
 var testCases = [
   {
@@ -21,7 +21,7 @@ var testCases = [
     result: {}
   },
   {
-    should: 'find parameter',
+    should: 'extract single parameter',
     str: 'my-name-is-Misha',
     pattern: 'my-name-is-:name',
     result: {
@@ -29,7 +29,7 @@ var testCases = [
     }
   },
   {
-    should: 'find multiple parameters',
+    should: 'extract multiple parameters',
     str: '/users/123/friends/456/photo',
     pattern: '/users/:userId/friends/:friendId/photo',
     result: {
@@ -39,16 +39,8 @@ var testCases = [
   },
   {
     should: 'handle special characters in the pattern',
-    str: 'my+name-is-Misha',
-    pattern: 'my+name-is-:name',
-    result: {
-      name: 'Misha'
-    }
-  },
-  {
-    should: 'handle many special characters in the pattern',
-    str: 'my(name}-is-Misha-{${Moroshko[[',
-    pattern: 'my(name}-is-:firstName-{${:lastName[[',
+    str: 'my(name}-is+Misha-{${Moroshko[[',
+    pattern: 'my(name}-is+:firstName-{${:lastName[[',
     result: {
       firstName: 'Misha',
       lastName: 'Moroshko'

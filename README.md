@@ -22,11 +22,17 @@ npm install extract-params --save
 Then, in your app:
 
 ```js
-var extractParams = require('extract-params');
+var extractParams = require('extract-params').extractParams;
+// or
+var extractParamsInFirstMatch = require('extract-params').extractParamsInFirstMatch;
 ```
 
 ## API
 
+* [`extractParams(str, pattern)`](#extractParams)
+* [`extractParamsInFirstMatch(str, patterns)`](#extractParamsInFirstMatch)
+
+<a name="extractParams"></a>
 ### extractParams(str, pattern)
 
 Tests whether `str` matches the given parameterized `pattern`, and returns a key-value object of parameters and their values in case of a successful match.
@@ -70,6 +76,59 @@ var params = extractParams(
   but not from the first character of `str`.
 */
 ```
+
+<a name="extractParamsInFirstMatch"></a>
+### extractParamsInFirstMatch(str, patterns)
+
+Tests whether `str` matches one of the parameterized `patterns`. If none of the `patterns` match, `extractParamsInFirstMatch` returns `null`. Otherwise, it returns the matching pattern and its parameters.
+
+#### Example 1
+
+```js
+var params = extractParamsInFirstMatch(
+  '/users/123',
+  [
+    '/users/:userId/friends/:friendId/photo',
+    '/users/:userId/friends/:friendId',
+    '/users/:userId/friends',
+    '/users/:userId',
+    '/users'
+  ]
+);
+
+/* 
+  Returns:
+    {
+      pattern: '/users/:userId',
+      params: {
+        userId: '123'
+      }
+    }
+*/
+```
+
+#### Example 2
+
+```js
+var params = extractParamsInFirstMatch(
+  '/users/123/subscriptions',
+  [
+    '/users/:userId/friends/:friendId/photo',
+    '/users/:userId/friends/:friendId',
+    '/users/:userId/friends',
+    '/users/:userId',
+    '/users'
+  ]
+);
+
+/* 
+  Returns:
+    null
+    
+  because none of the patterns match.
+*/
+```
+
 
 ## Running Tests
 

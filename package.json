@@ -4,9 +4,9 @@
   "description": "Extract parameters from a string based on a pattern",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js tests.js",
-    "test": "mocha tests",
-    "test-dev": "mocha tests --watch --reporter min",
+    "lint": "eslint lib test",
+    "test": "mocha test",
+    "test-dev": "mocha test --watch --reporter min",
     "build": "npm run lint && npm test"
   },
   "repository": {
@@ -19,7 +19,11 @@
   },
   "homepage": "https://github.com/moroshko/extract-params",
   "keywords": [
-    "regex"
+    "regex",
+    "pattern",
+    "matching",
+    "pattern matching",
+    "pattern-matching"
   ],
   "devDependencies": {
     "chai": "^3.4.1",
