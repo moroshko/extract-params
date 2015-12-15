@@ -19,6 +19,18 @@ function userIdValidator(params) {
 
 var testCases = [
   {
+    should: 'throw an Error if str is not a string',
+    str: 7,
+    patterns: [],
+    throw: '\'str\' must be a string'
+  },
+  {
+    should: 'throw an Error if patterns is not an array',
+    str: 'hey',
+    patterns: { pattern: ':salut' },
+    throw: '\'patterns\' must be an array'
+  },
+  {
     should: 'return null if no patterns provided',
     str: 'everyone-knows-that-elm-is-awesome',
     patterns: [],
@@ -68,7 +80,13 @@ var testCases = [
 describe('extractParamsInFirstMatch should', function() {
   testCases.forEach(function(testCase) {
     it(testCase.should, function() {
-      expect(extractParamsInFirstMatch(testCase.str, testCase.patterns)).to.deep.equal(testCase.result);
+      var fn = extractParamsInFirstMatch.bind(null, testCase.str, testCase.patterns);
+
+      if (testCase.throw) {
+        expect(fn).to.throw(testCase.throw);
+      } else {
+        expect(fn()).to.deep.equal(testCase.result);
+      }
     });
   });
 });

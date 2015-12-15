@@ -29,21 +29,21 @@ var extractParamsInFirstMatch = require('extract-params').extractParamsInFirstMa
 
 ## API
 
-* [`extractParams(str, pattern, transform)`](#extractParams)
+* [`extractParams(str, pattern, [transform])`](#extractParams)
 * [`extractParamsInFirstMatch(str, patterns)`](#extractParamsInFirstMatch)
 
 <a name="extractParams"></a>
-### extractParams(str, pattern, transform)
+### extractParams(str, pattern, [transform])
 
-Tests whether `str` matches the given parameterized `pattern`, and returns a key-value object of parameters and their values in case of a successful match.
+Tests whether `str` matches the given parameterized `pattern`. If match is successful, it returns a hash of parameters and their values.
+
+Otherwise, `extractParams` returns `null`.
 
 An optional `transform` function can be passed to manipulate the extracted params. If `transform` returns `null`, the match fails. `transform` can be used, for example, to lowercase the values in `params`, or to validate them (return `null` if validation fails).
 
+The match is considered successful only if `str` matches the `pattern` at the start and at the end (see examples 2 and 3 below).
+
 `pattern` parameters must be in the following format: `:camelCase`
-
-Match must occur from the first character of `str` in order to be considered successful (see examples below).
-
-If match is not successful, `extractParams` returns `null`.
 
 #### Example 1
 
@@ -66,20 +66,35 @@ var params = extractParams(
 
 ```js
 var params = extractParams(
-  '/home/users/123/friends/456/photo',
-  '/users/:userId/friends/:friendId/photo'
+  '/home/users/123',
+  '/users/:userId'
 );
 
 /* 
   Returns:
     null
       
-  because `str` matches `pattern`,
-  but not from the first character of `str`.
+  because `str` doesn't match the `pattern` at the start.
 */
 ```
 
 #### Example 3
+
+```js
+var params = extractParams(
+  '/users/123/friends/456',
+  '/users/:userId/friends'
+);
+
+/* 
+  Returns:
+    null
+      
+  because `str` doesn't match the `pattern` at the end.
+*/
+```
+
+#### Example 4
 
 ```js
 var params = extractParams(

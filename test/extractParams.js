@@ -3,19 +3,38 @@ var extractParams = require('../lib/extractParams');
 
 var testCases = [
   {
+    should: 'throw an Error if str is not a string',
+    str: 7,
+    pattern: '/:language',
+    throw: '\'str\' must be a string'
+  },
+  {
+    should: 'throw an Error if pattern is not a string',
+    str: 'elm',
+    pattern: /:language/,
+    throw: '\'pattern\' must be a string'
+  },
+  {
+    should: 'throw an Error if transform is not a function',
+    str: '/elm',
+    pattern: '/:language',
+    transform: {},
+    throw: '\'transform\' must be a function'
+  },
+  {
     should: 'return null if there is no match',
     str: 'everyone-knows-that-elm-is-awesome',
     pattern: 'he-said-that-:language-is-:description',
     result: null
   },
   {
-    should: 'return null if there is match but not at the start',
+    should: 'return null if str has extra characters at the start',
     str: 'she-said-that-elm-is-awesome',
     pattern: 'he-said-that-:language-is-:description',
     result: null
   },
   {
-    should: 'return null if there is match but not at the end',
+    should: 'return null if str has extra characters at the end',
     str: 'language-elm-is-awesome',
     pattern: 'language-:lang-is',
     result: null
@@ -105,7 +124,13 @@ var testCases = [
 describe('extractParams should', function() {
   testCases.forEach(function(testCase) {
     it(testCase.should, function() {
-      expect(extractParams(testCase.str, testCase.pattern, testCase.transform)).to.deep.equal(testCase.result);
+      var fn = extractParams.bind(null, testCase.str, testCase.pattern, testCase.transform);
+
+      if (testCase.throw) {
+        expect(fn).to.throw(testCase.throw);
+      } else {
+        expect(fn()).to.deep.equal(testCase.result);
+      }
     });
   });
 });
