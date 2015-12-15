@@ -29,13 +29,15 @@ var extractParamsInFirstMatch = require('extract-params').extractParamsInFirstMa
 
 ## API
 
-* [`extractParams(str, pattern)`](#extractParams)
+* [`extractParams(str, pattern, transform)`](#extractParams)
 * [`extractParamsInFirstMatch(str, patterns)`](#extractParamsInFirstMatch)
 
 <a name="extractParams"></a>
-### extractParams(str, pattern)
+### extractParams(str, pattern, transform)
 
 Tests whether `str` matches the given parameterized `pattern`, and returns a key-value object of parameters and their values in case of a successful match.
+
+An optional `transform` function can be passed to manipulate the extracted params. If `transform` returns `null`, the match fails. `transform` can be used, for example, to lowercase the values in `params`, or to validate them (return `null` if validation fails).
 
 `pattern` parameters must be in the following format: `:camelCase`
 
@@ -77,10 +79,31 @@ var params = extractParams(
 */
 ```
 
+#### Example 3
+
+```js
+var params = extractParams(
+  '/users/1234/friends/456/photo',
+  '/users/:userId/friends/:friendId/photo',
+  function(params) {
+    var userId = parseInt(params.userId, 10);
+    
+    return userId >= 1 && userId <= 999 ? params : null;
+  }
+);
+
+/* 
+  Returns:
+    null
+    
+  because userId > 999
+*/
+```
+
 <a name="extractParamsInFirstMatch"></a>
 ### extractParamsInFirstMatch(str, patterns)
 
-Tests whether `str` matches one of the parameterized `patterns`. If none of the `patterns` match, `extractParamsInFirstMatch` returns `null`. Otherwise, it returns the matching pattern and its parameters.
+Tests whether `str` matches one of the parameterized `patterns`. Every pattern can have an optional `transform` function. If none of the `patterns` match, `extractParamsInFirstMatch` returns `null`. Otherwise, it returns the matching pattern index and its parameters.
 
 #### Example 1
 
@@ -88,18 +111,18 @@ Tests whether `str` matches one of the parameterized `patterns`. If none of the 
 var params = extractParamsInFirstMatch(
   '/users/123',
   [
-    '/users/:userId/friends/:friendId/photo',
-    '/users/:userId/friends/:friendId',
-    '/users/:userId/friends',
-    '/users/:userId',
-    '/users'
+    { pattern: '/users/:userId/friends/:friendId/photo' },
+    { pattern: '/users/:userId/friends/:friendId' },
+    { pattern: '/users/:userId/friends' },
+    { pattern: '/users/:userId' },
+    { pattern: '/users' }
   ]
 );
 
 /* 
   Returns:
     {
-      pattern: '/users/:userId',
+      patternIndex: 3,
       params: {
         userId: '123'
       }
@@ -113,11 +136,11 @@ var params = extractParamsInFirstMatch(
 var params = extractParamsInFirstMatch(
   '/users/123/subscriptions',
   [
-    '/users/:userId/friends/:friendId/photo',
-    '/users/:userId/friends/:friendId',
-    '/users/:userId/friends',
-    '/users/:userId',
-    '/users'
+    { pattern: '/users/:userId/friends/:friendId/photo' },
+    { pattern: '/users/:userId/friends/:friendId' },
+    { pattern: '/users/:userId/friends' },
+    { pattern: '/users/:userId' },
+    { pattern: '/users' }
   ]
 );
 
@@ -129,6 +152,42 @@ var params = extractParamsInFirstMatch(
 */
 ```
 
+#### Example 3
+
+```js
+function userIdValidator(params) {
+  if (!('userId' in params)) {
+    return params;
+  }
+
+  // Without this check, '/users/1234/friends/567' would match '/users/:userId'
+  // with { userId: '1234/friends/567' }
+  if (!(/^\d+$/.test(params.userId))) {
+    return null;
+  }
+
+  var userId = parseInt(params.userId, 10);
+
+  return userId >= 1 && userId <= 999 ? params : null;
+}
+var params = extractParamsInFirstMatch(
+  '/users/1234/friends/567',
+  [
+    { pattern: '/users/:userId/friends/:friendId/photo', transform: userIdValidator },
+    { pattern: '/users/:userId/friends/:friendId', transform: userIdValidator },
+    { pattern: '/users/:userId/friends', transform: userIdValidator },
+    { pattern: '/users/:userId', transform: userIdValidator },
+    { pattern: '/users' }
+  ]
+);
+
+/* 
+  Returns:
+    null
+    
+  because userId > 999
+*/
+```
 
 ## Running Tests
 
