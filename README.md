@@ -43,7 +43,7 @@ An optional `transform` function can be passed to manipulate the extracted param
 
 The match is considered successful only if `str` matches the `pattern` at the start and at the end (see examples 2 and 3 below).
 
-`pattern` parameters must be in the following format: `:camelCase`
+`pattern` parameters must have letters only.
 
 #### Example 1
 
