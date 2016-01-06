@@ -3,6 +3,11 @@
   "version": "3.0.0",
   "description": "Extract parameters from a string based on a pattern",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moroshko/extract-params.git"
+  },
+  "author": "Misha Moroshko <michael.moroshko@gmail.com>",
   "scripts": {
     "lint": "eslint lib test",
     "test": "mocha test",
@@ -10,22 +15,6 @@
     "build": "npm run lint && npm test",
     "postversion": "git push && git push --tags"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/moroshko/extract-params.git"
-  },
-  "author": "Misha Moroshko <michael.moroshko@gmail.com>",
-  "bugs": {
-    "url": "https://github.com/moroshko/extract-params/issues"
-  },
-  "homepage": "https://github.com/moroshko/extract-params",
-  "keywords": [
-    "regex",
-    "pattern",
-    "matching",
-    "pattern matching",
-    "pattern-matching"
-  ],
   "dependencies": {
     "lodash.assign": "^3.2.0",
     "lodash.isarray": "^3.0.4",
@@ -39,5 +28,16 @@
     "eslint": "^1.10.3",
     "mocha": "^2.3.4"
   },
+  "files": [
+    "index.js",
+    "lib"
+  ],
+  "keywords": [
+    "regex",
+    "pattern",
+    "matching",
+    "pattern matching",
+    "pattern-matching"
+  ],
   "license": "MIT"
 }
