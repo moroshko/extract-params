@@ -64,6 +64,35 @@ var testCases = [
     }
   },
   {
+    should: 'return the first match if the string has mixed case when patterns are not case sensitive',
+    str: '/UsErS/123',
+    patterns: [
+      { pattern: '/users/:userId/friends/:friendId/photo', caseSensitive: false },
+      { pattern: '/users/:userId/friends/:friendId', caseSensitive: false },
+      { pattern: '/users/:userId/friends', caseSensitive: false },
+      { pattern: '/users/:userId', caseSensitive: false },
+      { pattern: '/users', caseSensitive: false }
+    ],
+    result: {
+      patternIndex: 3,
+      params: {
+        userId: '123'
+      }
+    }
+  },
+  {
+    should: 'return null if the string has mixed case given patterns are case sensitive by default',
+    str: '/UsErS/123',
+    patterns: [
+      { pattern: '/users/:userId/friends/:friendId/photo' },
+      { pattern: '/users/:userId/friends/:friendId' },
+      { pattern: '/users/:userId/friends' },
+      { pattern: '/users/:userId' },
+      { pattern: '/users' }
+    ],
+    result: null
+  },
+  {
     should: 'use the transform function to return the first match',
     str: '/users/1234/friends/456',
     patterns: [
