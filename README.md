@@ -161,12 +161,12 @@ var params = extractParams(
 #### Example 7
 
 ```js
-var companyRegex = /[a-zA-Z]+/;
-var employeeRegex = /[a-z\-]+/;
+var companyRegex = /^[a-zA-Z]+$/;
+var employeeRegex = /^[a-z-]+$/;
 
 function validator(params) {
   return typeof params.company === 'string' && companyRegex.test(params.company) &&
-         typeof params.employee === 'string' && employeeRegex.test(params.employee);
+         typeof params.employee === 'string' && employeeRegex.test(params.employee) ? params : null;
 }
 
 var params = extractParams(
