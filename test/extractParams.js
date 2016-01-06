@@ -48,7 +48,7 @@ var testCases = [
     result: {}
   },
   {
-    should: 'return use the transform function if there is match but the pattern has no parameters',
+    should: 'use the transform function if there is match but the pattern has no parameters',
     str: 'react-is-awesome',
     pattern: {
       pattern: 'react-is-awesome',
