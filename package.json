@@ -1,6 +1,6 @@
 {
   "name": "extract-params",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Extract parameters from a string based on a pattern",
   "main": "index.js",
   "repository": {
