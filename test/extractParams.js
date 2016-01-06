@@ -17,8 +17,10 @@ var testCases = [
   {
     should: 'throw an Error if transform is not a function',
     str: '/elm',
-    pattern: '/:language',
-    transform: {},
+    pattern: {
+      pattern: '/:language',
+      transform: {}
+    },
     throw: '\'transform\' must be a function'
   },
   {
@@ -48,17 +50,19 @@ var testCases = [
   {
     should: 'return use the transform function if there is match but the pattern has no parameters',
     str: 'react-is-awesome',
-    pattern: 'react-is-awesome',
-    transform: function(params) {
-      var newParams = {
-        mood: 'awesome'
-      };
+    pattern: {
+      pattern: 'react-is-awesome',
+      transform: function(params) {
+        var newParams = {
+          mood: 'awesome'
+        };
 
-      for (var param in params) {
-        newParams[param] = params[param];
+        for (var param in params) {
+          newParams[param] = params[param];
+        }
+
+        return newParams;
       }
-
-      return newParams;
     },
     result: {
       mood: 'awesome'
@@ -91,17 +95,27 @@ var testCases = [
     }
   },
   {
+    should: 'handle case insensitive patterns',
+    str: 'My-Name-Is-Misha',
+    pattern: { pattern: 'my-name-is-:name', caseSensitive: false },
+    result: {
+      name: 'Misha'
+    }
+  },
+  {
     should: 'transform the extracted params using the transform function',
     str: '/users/123/friends/456/photo',
-    pattern: '/users/:userId/friends/:friendId/photo',
-    transform: function(params) {
-      var newParams = {};
+    pattern: {
+      pattern: '/users/:userId/friends/:friendId/photo',
+      transform: function(params) {
+        var newParams = {};
 
-      for (var param in params) {
-        newParams[param] = '**' + params[param] + '**';
+        for (var param in params) {
+          newParams[param] = '**' + params[param] + '**';
+        }
+
+        return newParams;
       }
-
-      return newParams;
     },
     result: {
       userId: '**123**',
@@ -111,11 +125,13 @@ var testCases = [
   {
     should: 'fail the match if the transform function returns null',
     str: '/users/1234/friends/456/photo',
-    pattern: '/users/:userId/friends/:friendId/photo',
-    transform: function(params) {
-      var userId = parseInt(params.userId, 10);
+    pattern: {
+      pattern: '/users/:userId/friends/:friendId/photo',
+      transform: function(params) {
+        var userId = parseInt(params.userId, 10);
 
-      return userId >= 1 && userId <= 999 ? params : null;
+        return userId >= 1 && userId <= 999 ? params : null;
+      }
     },
     result: null
   }
@@ -124,7 +140,7 @@ var testCases = [
 describe('extractParams should', function() {
   testCases.forEach(function(testCase) {
     it(testCase.should, function() {
-      var fn = extractParams.bind(null, testCase.str, testCase.pattern, testCase.transform);
+      var fn = extractParams.bind(null, testCase.str, testCase.pattern);
 
       if (testCase.throw) {
         expect(fn).to.throw(testCase.throw);
